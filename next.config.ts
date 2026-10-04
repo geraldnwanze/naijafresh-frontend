@@ -7,7 +7,17 @@ import { normalizeApiOrigin } from "./lib/api-origin";
 // "/_api/*" path, which is rewritten here.
 const API_ORIGIN = normalizeApiOrigin(process.env.API_ORIGIN);
 
+// Platforms like Cloudflare Workers keep build variables and runtime variables
+// apart, so without this the server-side pages could fall back to localhost even
+// though the /_api proxy (resolved at build) works. When API_ORIGIN is known at
+// build time it is also baked in as BUILT_API_ORIGIN, which lib/api.ts uses when
+// no runtime API_ORIGIN exists. (It is only the API's public URL. A separate name
+// is used on purpose: inlining API_ORIGIN itself stops the runtime value working.)
+const bakedOrigin = process.env.API_ORIGIN ? { env: { BUILT_API_ORIGIN: API_ORIGIN } } : {};
+
 const nextConfig: NextConfig = {
+  ...bakedOrigin,
+
   // Dev-only. Next.js blocks cross-origin requests to /_next/* dev resources
   // (HMR + the App Router's client navigation) unless the host is listed here.
   // Without it, serving `next dev` through a tunnel (ngrok, cloudflared) or over

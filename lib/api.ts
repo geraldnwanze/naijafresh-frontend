@@ -16,7 +16,7 @@ const trimSlash = (value: string) => value.replace(/\/$/, "");
 
 const serverBase =
   process.env.INTERNAL_API_URL ??
-  `${normalizeApiOrigin(process.env.API_ORIGIN)}/api/v1`;
+  `${normalizeApiOrigin(process.env.API_ORIGIN || process.env.BUILT_API_ORIGIN)}/api/v1`;
 
 const browserBase = process.env.NEXT_PUBLIC_API_URL || "/_api/v1";
 
