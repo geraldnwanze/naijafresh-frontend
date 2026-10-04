@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
+import { normalizeApiOrigin } from "./lib/api-origin";
+
 // The API origin the Next server proxies browser calls to. Keep it pointing at
 // the Laravel app; the browser never sees this — it calls the same-origin
 // "/_api/*" path, which is rewritten here.
-const API_ORIGIN = process.env.API_ORIGIN ?? "http://localhost:8000";
+const API_ORIGIN = normalizeApiOrigin(process.env.API_ORIGIN);
 
 const nextConfig: NextConfig = {
   // Dev-only. Next.js blocks cross-origin requests to /_next/* dev resources

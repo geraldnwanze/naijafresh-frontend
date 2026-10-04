@@ -10,11 +10,13 @@
 //     no mixed-content issues.
 //   - Server (RSC): must be absolute — INTERNAL_API_URL, else API_ORIGIN + /api/v1,
 //     else localhost.
+import { normalizeApiOrigin } from "./api-origin";
+
 const trimSlash = (value: string) => value.replace(/\/$/, "");
 
 const serverBase =
   process.env.INTERNAL_API_URL ??
-  `${process.env.API_ORIGIN ?? "http://localhost:8000"}/api/v1`;
+  `${normalizeApiOrigin(process.env.API_ORIGIN)}/api/v1`;
 
 const browserBase = process.env.NEXT_PUBLIC_API_URL || "/_api/v1";
 
