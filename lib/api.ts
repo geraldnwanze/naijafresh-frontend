@@ -20,6 +20,18 @@ const serverBase =
 
 const browserBase = process.env.NEXT_PUBLIC_API_URL || "/_api/v1";
 
+/** Which setting decided the server-side API address (names only, never values). For /api/health. */
+export const API_BASE_SOURCE =
+  typeof window !== "undefined"
+    ? "browser"
+    : process.env.INTERNAL_API_URL
+      ? "INTERNAL_API_URL"
+      : process.env.API_ORIGIN
+        ? "API_ORIGIN (runtime variable)"
+        : process.env.BUILT_API_ORIGIN
+          ? "API_ORIGIN (baked in at build)"
+          : "default (localhost)";
+
 export const API_BASE_URL = trimSlash(
   typeof window === "undefined" ? serverBase : browserBase,
 );

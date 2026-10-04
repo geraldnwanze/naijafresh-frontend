@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_SOURCE, API_BASE_URL } from "@/lib/api";
 
 // Reports whether this server can reach the Laravel API, and which setting it
 // is using. Handy after a deploy: open /api/health. It exposes no secrets (the
@@ -30,7 +30,7 @@ export async function GET() {
   const cached = await probe({ next: { revalidate: 120 } });
 
   return Response.json(
-    { apiBase: API_BASE_URL, plain, cached },
+    { apiBase: API_BASE_URL, source: API_BASE_SOURCE, plain, cached },
     { status: plain.ok && cached.ok ? 200 : 503, headers: { "Cache-Control": "no-store" } },
   );
 }
