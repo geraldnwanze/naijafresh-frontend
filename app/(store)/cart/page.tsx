@@ -50,7 +50,7 @@ export default function CartPage() {
                 className="h-20 w-20 shrink-0 overflow-hidden rounded-xl"
               >
                 <ProductImage
-                  product={{ name: line.name, tags: [], image_url: line.imageUrl, is_meal_kit: line.type === "meal_kit" }}
+                  product={{ name: line.name, tags: [], image_url: line.imageUrl, is_meal_kit: line.type === "meal_kit", is_food_pack: line.type === "food_pack" }}
                   rounded="rounded-none"
                 />
               </Link>

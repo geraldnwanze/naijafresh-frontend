@@ -22,7 +22,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   const sp = await searchParams;
   const search = pick(sp.search);
   const category = pick(sp.category);
-  const type = pick(sp.type) as "ingredient" | "meal_kit" | undefined;
+  const type = pick(sp.type) as "ingredient" | "meal_kit" | "food_pack" | undefined;
   const sort = pick(sp.sort) as "newest" | "price_asc" | "price_desc" | "name" | undefined;
   const storage = pick(sp.storage) === "frozen" ? "frozen" : undefined;
 

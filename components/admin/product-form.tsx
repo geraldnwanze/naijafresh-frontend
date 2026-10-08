@@ -71,7 +71,7 @@ export function ProductForm({
     tags: (product?.tags ?? []).join(", "),
     serves: product?.meal_kit?.serves ?? "",
     prep_time_minutes: product?.meal_kit?.prep_time_minutes ? String(product.meal_kit.prep_time_minutes) : "",
-    included_items: (product?.meal_kit?.included_items ?? []).join("\n"),
+    included_items: (product?.meal_kit?.included_items ?? product?.food_pack?.contents ?? []).join("\n"),
     not_included_items: (product?.meal_kit?.not_included_items ?? []).join("\n"),
     storage_instructions: product?.meal_kit?.storage_instructions ?? "",
     cooking_instructions: product?.meal_kit?.cooking_instructions ?? "",
@@ -97,6 +97,9 @@ export function ProductForm({
     setSaving(true);
     setErrors({});
 
+    // A food pack is always a per-pack, room-temperature bundle (the API enforces this too).
+    const isPack = form.type === "food_pack";
+
     const body: Record<string, unknown> = {
       category_id: Number(form.category_id),
       type: form.type,
@@ -107,9 +110,9 @@ export function ProductForm({
       compare_at_price_kobo: form.compare_at_price_naira
         ? Math.round(Number(form.compare_at_price_naira) * 100)
         : null,
-      sold_by: form.sold_by,
-      storage_type: form.storage_type,
-      ...(form.sold_by === "weight"
+      sold_by: isPack ? "unit" : form.sold_by,
+      storage_type: isPack ? "ambient" : form.storage_type,
+      ...(form.sold_by === "weight" && !isPack
         ? {
             // The API forces the unit to "kg"; stock and limits are grams.
             weight_step_grams: Number(form.weight_step_grams),
@@ -127,6 +130,10 @@ export function ProductForm({
       image_url: form.image_url || null,
       tags: form.tags ? form.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
     };
+
+    if (isPack) {
+      body.included_items = toLines(form.included_items);
+    }
 
     if (form.type === "meal_kit") {
       Object.assign(body, {
@@ -192,19 +199,28 @@ export function ProductForm({
           </Select>
         </Field>
         <Field label="Type">
-          <Select value={form.type} onChange={(e) => set("type", e.target.value as Product["type"])}>
+          <Select
+            value={form.type}
+            onChange={(e) => {
+              const type = e.target.value as Product["type"];
+              // A food pack is always one per-pack, room-temperature bundle.
+              setForm((f) => ({ ...f, type, ...(type === "food_pack" ? { sold_by: "unit" as const, storage_type: "ambient" as const } : {}) }));
+            }}
+          >
             <option value="ingredient">Ingredient</option>
             <option value="meal_kit">Meal kit</option>
+            <option value="food_pack">Food pack combo</option>
           </Select>
         </Field>
-        <Field label="How is it sold?">
-          <Select value={form.sold_by} onChange={(e) => set("sold_by", e.target.value as "unit" | "weight")}>
+        <Field label="How is it sold?" hint={form.type === "food_pack" ? "Food packs are sold per pack." : undefined}>
+          <Select disabled={form.type === "food_pack"} value={form.sold_by} onChange={(e) => set("sold_by", e.target.value as "unit" | "weight")}>
             <option value="unit">Per item (bunch, pack, kit…)</option>
             <option value="weight">By weight (price per kg)</option>
           </Select>
         </Field>
-        <Field label="Storage">
+        <Field label="Storage" hint={form.type === "food_pack" ? "Food packs are non-perishable." : undefined}>
           <Select
+            disabled={form.type === "food_pack"}
             value={form.storage_type}
             onChange={(e) => set("storage_type", e.target.value as "ambient" | "chilled" | "frozen")}
           >
@@ -324,6 +340,25 @@ export function ProductForm({
           Featured on homepage
         </label>
       </div>
+
+      {form.type === "food_pack" && (
+        <div className="space-y-4 rounded-xl bg-amber-50/60 p-4">
+          <p className="text-sm font-semibold text-brand-800">Food pack details</p>
+          <Field
+            label="What's inside"
+            required
+            hint="One item per line, with the amount, e.g. Parboiled rice (5 kg). At least two items."
+            error={errors.included_items?.[0]}
+          >
+            <Textarea
+              rows={8}
+              value={form.included_items}
+              onChange={(e) => set("included_items", e.target.value)}
+              placeholder={"Parboiled rice (5 kg)\nSpaghetti (4 packs)\nGroundnut oil (1 L)"}
+            />
+          </Field>
+        </div>
+      )}
 
       {form.type === "meal_kit" && (
         <div className="space-y-4 rounded-xl bg-brand-50/50 p-4">

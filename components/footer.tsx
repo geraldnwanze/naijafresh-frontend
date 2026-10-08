@@ -20,6 +20,7 @@ export function Footer() {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/products" className="hover:underline">All products</Link></li>
             <li><Link href="/products?type=meal_kit" className="hover:underline">Meal kits</Link></li>
+            <li><Link href="/products?type=food_pack" className="hover:underline">Food packs</Link></li>
             <li><Link href="/categories/spices-seasonings" className="hover:underline">Spices &amp; seasonings</Link></li>
             <li><Link href="/categories/protein" className="hover:underline">Protein</Link></li>
             <li><Link href="/categories/frozen-foods" className="hover:underline">Frozen foods</Link></li>

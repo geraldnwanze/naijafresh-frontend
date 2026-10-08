@@ -4,6 +4,7 @@ import { CategoryCard } from "@/components/category-card";
 import { ProductCard } from "@/components/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import { getCategories, getProducts } from "@/lib/catalogue";
+import { formatNaira } from "@/lib/format";
 
 // Rendered per request (the API is read at request time, not at build time),
 // but each API read is still cached for 120s — see lib/catalogue.ts.
@@ -25,11 +26,14 @@ const WHY = [
 ];
 
 export default async function HomePage() {
-  const [categories, featured, mealKits] = await Promise.all([
+  const [categories, featured, mealKits, foodPacks] = await Promise.all([
     getCategories(),
     getProducts({ featured: true, per_page: 8 }),
     getProducts({ type: "meal_kit", per_page: 6 }),
+    getProducts({ type: "food_pack", per_page: 6, sort: "price_asc" }),
   ]);
+
+  const cheapestPack = foodPacks.data.length > 0 ? Math.min(...foodPacks.data.map((p) => p.price_kobo)) : null;
 
   return (
     <div>
@@ -106,6 +110,31 @@ export default async function HomePage() {
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {mealKits.data.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Food pack combos */}
+      {foodPacks.data.length > 0 && (
+        <section className="bg-amber-50/60 py-12">
+          <div className="container-page">
+            <div className="flex items-end justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-brand-800">Food pack combos</h2>
+                <p className="mt-1 text-sm text-ink-soft">
+                  Non-perishable staples bundled at one pack price
+                  {cheapestPack !== null ? `, from ${formatNaira(cheapestPack)}` : ""}.
+                </p>
+              </div>
+              <Link href="/products?type=food_pack" className="text-sm font-semibold text-brand-700 hover:underline">
+                All food packs
+              </Link>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {foodPacks.data.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

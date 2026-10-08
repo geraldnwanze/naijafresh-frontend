@@ -24,7 +24,8 @@ const EMOJI_RULES: [RegExp, string][] = [
   [/box|bundle|pack/i, "🧺"],
 ];
 
-function emojiFor(product: Pick<Product, "name" | "tags">): string {
+function emojiFor(product: Pick<Product, "name" | "tags"> & { is_food_pack?: boolean }): string {
+  if (product.is_food_pack) return "🧺";
   const haystack = `${product.name} ${(product.tags ?? []).join(" ")}`;
   for (const [re, emoji] of EMOJI_RULES) {
     if (re.test(haystack)) return emoji;
@@ -37,7 +38,7 @@ export function ProductImage({
   className,
   rounded = "rounded-xl",
 }: {
-  product: Pick<Product, "name" | "tags" | "image_url" | "is_meal_kit">;
+  product: Pick<Product, "name" | "tags" | "image_url" | "is_meal_kit"> & { is_food_pack?: boolean };
   className?: string;
   rounded?: string;
 }) {
@@ -59,7 +60,9 @@ export function ProductImage({
         "flex h-full w-full items-center justify-center bg-gradient-to-br",
         product.is_meal_kit
           ? "from-brand-100 to-accent-400/30"
-          : "from-brand-50 to-leaf-400/25",
+          : product.is_food_pack
+            ? "from-amber-100 to-accent-400/30"
+            : "from-brand-50 to-leaf-400/25",
         rounded,
         className,
       )}
