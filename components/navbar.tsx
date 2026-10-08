@@ -10,6 +10,7 @@ import { SearchBox } from "@/components/search-box";
 const NAV_LINKS = [
   { href: "/products", label: "Shop all" },
   { href: "/products?type=meal_kit", label: "Meal kits" },
+  { href: "/products?type=food_pack", label: "Food packs" },
   { href: "/categories/frozen-foods", label: "Frozen" },
   { href: "/categories/spices-seasonings", label: "Spices" },
   { href: "/#how-it-works", label: "How it works" },

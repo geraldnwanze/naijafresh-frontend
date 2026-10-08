@@ -108,6 +108,7 @@ export default function AdminProductsPage() {
                         <td className="px-4 py-2">
                           <span className="font-medium text-ink">{product.name}</span>
                           {product.is_meal_kit && <Badge className="ml-2 bg-accent-500 text-brand-900">kit</Badge>}
+                          {product.is_food_pack && <Badge className="ml-2 bg-amber-100 text-amber-900">pack</Badge>}
                           {product.is_frozen && <Badge className="ml-2 bg-sky-100 text-sky-800">frozen</Badge>}
                         </td>
                         <td className="px-4 py-2 text-ink-soft">{product.category?.name}</td>

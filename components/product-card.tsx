@@ -14,8 +14,9 @@ export function ProductCard({ product }: { product: Product }) {
         <ProductImage product={product} rounded="rounded-none" className="transition duration-300 group-hover:scale-[1.03]" />
         <div className="absolute left-2 top-2 flex gap-1">
           {product.is_meal_kit && <Badge className="bg-accent-500 text-brand-900">Meal kit</Badge>}
+          {product.is_food_pack && <Badge className="bg-amber-100 text-amber-900">Food pack</Badge>}
           {product.is_frozen && <Badge className="bg-sky-100 text-sky-800">❄️ Frozen</Badge>}
-          {product.is_featured && !product.is_meal_kit && !product.is_frozen && <Badge>Popular</Badge>}
+          {product.is_featured && !product.is_meal_kit && !product.is_food_pack && !product.is_frozen && <Badge>Popular</Badge>}
         </div>
         {!product.in_stock && (
           <div className="absolute inset-0 grid place-items-center bg-white/60">
@@ -35,6 +36,7 @@ export function ProductCard({ product }: { product: Product }) {
             ? `sold by weight · from ${formatWeight(product.weight.min_grams)}`
             : `per ${product.unit}`}
           {product.is_meal_kit && product.meal_kit?.serves ? ` · serves ${product.meal_kit.serves}` : ""}
+          {product.is_food_pack && product.food_pack ? ` · ${product.food_pack.item_count} items inside` : ""}
         </p>
 
         <div className="mt-2 flex items-center justify-between">

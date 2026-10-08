@@ -1,6 +1,6 @@
 // Shapes returned by the NaijaFresh Laravel API (app/Http/Resources/*).
 
-export type ProductType = "ingredient" | "meal_kit";
+export type ProductType = "ingredient" | "meal_kit" | "food_pack";
 
 /** How a product is sold. For "weight", price is per kg and quantities/stock are grams. */
 export type SoldBy = "unit" | "weight";
@@ -58,12 +58,20 @@ export interface MealKitDetail {
   cooking_instructions: string | null;
 }
 
+/** A fixed combo of non-perishable foodstuffs sold as one pack. */
+export interface FoodPackDetail {
+  /** "What's inside", one entry per item, e.g. "Parboiled rice (5 kg)". */
+  contents: string[];
+  item_count: number;
+}
+
 export interface Product {
   id: number;
   name: string;
   slug: string;
   type: ProductType;
   is_meal_kit: boolean;
+  is_food_pack: boolean;
   description: string;
   price_kobo: number;
   price: string;
@@ -94,6 +102,7 @@ export interface Product {
   preparation_label: string | null;
   category?: Category;
   meal_kit?: MealKitDetail;
+  food_pack?: FoodPackDetail;
   variants?: ProductVariant[];
 }
 

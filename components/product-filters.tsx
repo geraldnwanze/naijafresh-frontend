@@ -16,6 +16,7 @@ const TYPES = [
   { value: "", label: "Everything" },
   { value: "ingredient", label: "Ingredients" },
   { value: "meal_kit", label: "Meal kits" },
+  { value: "food_pack", label: "Food packs" },
 ];
 
 export function ProductFilters({ categories }: { categories: Category[] }) {

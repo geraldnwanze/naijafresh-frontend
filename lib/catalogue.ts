@@ -23,7 +23,7 @@ export function getDeliveryWindows() {
 
 export interface ProductQuery {
   category?: string;
-  type?: "ingredient" | "meal_kit";
+  type?: "ingredient" | "meal_kit" | "food_pack";
   storage?: "ambient" | "chilled" | "frozen";
   sold_by?: "unit" | "weight";
   search?: string;

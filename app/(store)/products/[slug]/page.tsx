@@ -38,6 +38,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   }
 
   const kit = product.meal_kit;
+  const pack = product.food_pack;
 
   return (
     <div className="container-page py-8">
@@ -63,6 +64,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         <div>
           <div className="flex flex-wrap gap-2">
             {product.is_meal_kit && <Badge className="bg-accent-500 text-brand-900">Ready-to-cook meal kit</Badge>}
+            {product.is_food_pack && <Badge className="bg-amber-100 text-amber-900">Food pack combo</Badge>}
             {product.is_frozen && <Badge className="bg-sky-100 text-sky-800">❄️ Frozen</Badge>}
             {product.is_sold_by_weight && <Badge className="bg-brand-100 text-brand-700">Sold by weight</Badge>}
             {product.tags.slice(0, 3).map((tag) => (
@@ -92,6 +94,25 @@ export default async function ProductPage({ params }: { params: Params }) {
           )}
         </div>
       </div>
+
+      {pack && (
+        <section className="mt-10 rounded-card border border-black/5 bg-white p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="text-lg font-bold text-brand-800">What&apos;s inside</h2>
+            <p className="text-sm text-ink-soft">
+              {pack.item_count} items · one pack price · no fridge needed
+            </p>
+          </div>
+          <ul className="mt-3 grid gap-x-6 gap-y-1.5 text-sm text-ink sm:grid-cols-2">
+            {pack.contents.map((item) => (
+              <li key={item}>✓ {item}</li>
+            ))}
+          </ul>
+          <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            🧺 Everything in this pack is non-perishable. Store it in a cool, dry place.
+          </p>
+        </section>
+      )}
 
       {kit && (
         <section className="mt-10 grid gap-6 lg:grid-cols-2">
