@@ -8,10 +8,11 @@ import { Pager } from "@/components/admin/system/pager";
 import { useDebounced } from "@/components/admin/system/use-debounced";
 import { Badge } from "@/components/ui/badge";
 import { Input, Select } from "@/components/ui/field";
-import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
+import { EmptyState, ErrorState } from "@/components/ui/states";
 import { cn, formatTimestamp } from "@/lib/format";
 import type { ActivityLogEntry, Paginated } from "@/lib/types";
 import { useApi } from "@/lib/use-api";
+import { TableSkeleton } from "@/components/ui/skeletons";
 
 type ActivityList = Paginated<ActivityLogEntry> & { filters: { events: { value: string; label: string }[] } };
 
@@ -81,7 +82,7 @@ export default function ActivityLogPage() {
 
       <div className="mt-4">
         {loading && !data ? (
-          <LoadingState />
+          <TableSkeleton />
         ) : error ? (
           <ErrorState message={error} />
         ) : !data || data.data.length === 0 ? (

@@ -9,11 +9,12 @@ import { OrderStatusTimeline } from "@/components/order-status-timeline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select } from "@/components/ui/field";
-import { ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { apiFetch, ApiError } from "@/lib/api";
 import { formatDate, formatNaira, formatPct, profitTextClass } from "@/lib/format";
 import { useApi } from "@/lib/use-api";
 import type { Order } from "@/lib/types";
+import { AdminOrderSkeleton } from "@/components/skeletons/admin";
 
 const NEXT_STATUSES = [
   "confirmed", "processing", "preparing", "ready_for_pickup",
@@ -32,7 +33,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
   const [riderPhone, setRiderPhone] = useState("");
   const [saving, setSaving] = useState(false);
 
-  if (loading) return <LoadingState />;
+  if (loading) return <AdminOrderSkeleton />;
   if (error || !data) return <ErrorState message={error ?? undefined} />;
 
   const order = data.data;

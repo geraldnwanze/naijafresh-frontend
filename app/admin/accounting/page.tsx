@@ -6,11 +6,12 @@ import { useMemo, useState } from "react";
 import { ProfitChart } from "@/components/admin/profit-chart";
 import { ButtonLink } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/field";
-import { ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { presetRange, RANGE_PRESETS, type RangePreset } from "@/lib/dates";
 import { cn, formatNaira, formatPct, profitTextClass } from "@/lib/format";
 import type { ProfitLossProductRow, ProfitLossReport, ReportBasis, ReportGroupBy } from "@/lib/types";
 import { useApi } from "@/lib/use-api";
+import { AdminAccountingSkeleton } from "@/components/skeletons/admin";
 
 type ProductSort = "profit_desc" | "profit_asc" | "margin_desc" | "margin_asc";
 
@@ -228,7 +229,7 @@ export default function AccountingPage() {
         {from > to && <p className="text-sm text-rose-600">The start date must be on or before the end date.</p>}
       </div>
 
-      {!report && loading && <LoadingState label="Crunching the numbers…" />}
+      {!report && loading && <AdminAccountingSkeleton />}
       {error && !report && (
         <div className="mt-5">
           <ErrorState message={error} />

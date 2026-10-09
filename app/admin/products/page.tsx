@@ -8,11 +8,12 @@ import { ProductForm } from "@/components/admin/product-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
-import { ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { apiFetch, ApiError } from "@/lib/api";
 import { formatNaira, formatPct, profitTextClass } from "@/lib/format";
 import { useApi } from "@/lib/use-api";
 import type { Category, Paginated, Product } from "@/lib/types";
+import { TableSkeleton } from "@/components/ui/skeletons";
 
 export default function AdminProductsPage() {
   const { token } = useAuth();
@@ -84,7 +85,7 @@ export default function AdminProductsPage() {
 
           <div className="mt-4">
             {loading ? (
-              <LoadingState />
+              <TableSkeleton />
             ) : error ? (
               <ErrorState message={error} />
             ) : (

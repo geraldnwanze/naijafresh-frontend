@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { useAuth } from "@/components/providers/auth-provider";
-import { LoadingState } from "@/components/ui/states";
+import { TableSkeleton } from "@/components/ui/skeletons";
+
 
 /** Keeps ordinary admins out of the system area (the API refuses them too). */
 export function SystemGuard({ children }: { children: React.ReactNode }) {
@@ -16,7 +17,7 @@ export function SystemGuard({ children }: { children: React.ReactNode }) {
   }, [loading, user, router]);
 
   if (loading || !user?.is_super_admin) {
-    return <LoadingState label="Checking access…" />;
+    return <TableSkeleton rows={6} />;
   }
 
   return <>{children}</>;

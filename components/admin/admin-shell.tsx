@@ -6,8 +6,9 @@ import { useEffect } from "react";
 
 import { NotificationBell } from "@/components/notification-bell";
 import { useAuth } from "@/components/providers/auth-provider";
-import { LoadingState } from "@/components/ui/states";
+
 import { cn } from "@/lib/format";
+import { AdminShellSkeleton } from "@/components/skeletons/admin";
 
 import { SYSTEM_LINKS } from "./system/system-nav";
 
@@ -37,7 +38,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }, [loading, user, router]);
 
   if (loading || !user || !user.is_admin) {
-    return <LoadingState label="Checking access…" />;
+    return <AdminShellSkeleton />;
   }
 
   // Super admins also get the system area (audit trail, activity, logs, roles).

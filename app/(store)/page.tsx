@@ -35,7 +35,7 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="border-b border-black/5 bg-gradient-to-b from-brand-50 to-cream-100">
-        <div className="container-page grid gap-8 py-12 md:grid-cols-2 md:items-center md:py-20">
+        <div className="container-page grid gap-8 py-10 md:grid-cols-2 md:items-center md:py-12">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-brand-700 shadow-sm">
               🇳🇬 Cooked at home, sourced by us
@@ -57,13 +57,14 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="relative">
-            <div className="grid grid-cols-2 gap-3">
+          {/* Compact tiles (one row on phones, 3 × 2 on larger screens) so the whole hero fits in the first screen. */}
+          <div className="relative mx-auto w-full max-w-sm md:ml-auto md:mr-0 md:max-w-md">
+            <div className="grid grid-cols-6 gap-2 md:grid-cols-3 md:gap-3">
               {["🍲", "🥬", "🌶️", "🍚", "🐟", "🧂"].map((emoji, i) => (
                 <div
                   key={emoji}
-                  className={`grid aspect-square place-items-center rounded-card bg-white text-5xl shadow-sm ${
-                    i % 3 === 1 ? "translate-y-4" : ""
+                  className={`grid aspect-square place-items-center rounded-card bg-white text-2xl shadow-sm md:text-4xl ${
+                    i % 3 === 1 ? "md:translate-y-3" : ""
                   }`}
                 >
                   {emoji}

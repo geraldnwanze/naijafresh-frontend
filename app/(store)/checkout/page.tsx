@@ -10,11 +10,12 @@ import { CheckoutSummary } from "@/components/checkout-summary";
 import { DeliveryWindowSelector } from "@/components/delivery-window-selector";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/field";
-import { LoadingState } from "@/components/ui/states";
+
 import { apiFetch, ApiError } from "@/lib/api";
 import { track } from "@/lib/analytics";
 import type { DeliveryWindow, Order, StoreConfig } from "@/lib/types";
 import { useCartPricing } from "@/lib/use-cart-pricing";
+import { CheckoutSkeleton } from "@/components/skeletons/store";
 
 interface OrderResponse {
   data: Order;
@@ -167,7 +168,7 @@ export default function CheckoutPage() {
   }
 
   if (authLoading || !user) {
-    return <LoadingState label="Loading checkout…" />;
+    return <CheckoutSkeleton />;
   }
 
   return (
