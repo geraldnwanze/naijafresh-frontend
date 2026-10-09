@@ -5,16 +5,17 @@ import Link from "next/link";
 import { ChangeTable } from "@/components/admin/system/change-table";
 import { ACTIVITY_EVENT_STYLES } from "@/components/admin/system/event-styles";
 import { Badge } from "@/components/ui/badge";
-import { ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { cn, formatTimestamp, timeAgo } from "@/lib/format";
 import type { SystemOverview } from "@/lib/types";
 import { useApi } from "@/lib/use-api";
+import { SystemOverviewSkeleton } from "@/components/skeletons/admin";
 
 
 export default function SystemOverviewPage() {
   const { data: res, loading, error } = useApi<{ data: SystemOverview }>("/admin/system/overview");
 
-  if (loading && !res) return <LoadingState />;
+  if (loading && !res) return <SystemOverviewSkeleton />;
   if (error || !res) return <ErrorState message={error ?? undefined} />;
 
   const { stats, users_by_role, failed_sign_in_ips, recent_audit, recent_activity } = res.data;

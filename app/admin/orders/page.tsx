@@ -5,10 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Input, Select } from "@/components/ui/field";
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui/states";
+import { ErrorState, EmptyState } from "@/components/ui/states";
 import { formatDate } from "@/lib/format";
 import { useApi } from "@/lib/use-api";
 import type { Order, Paginated } from "@/lib/types";
+import { TableSkeleton } from "@/components/ui/skeletons";
 
 const STATUSES = [
   "", "pending", "confirmed", "processing", "preparing",
@@ -56,7 +57,7 @@ export default function AdminOrdersPage() {
 
       <div className="mt-4">
         {loading ? (
-          <LoadingState />
+          <TableSkeleton />
         ) : error ? (
           <ErrorState message={error} />
         ) : !data || data.data.length === 0 ? (

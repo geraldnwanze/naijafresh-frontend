@@ -8,12 +8,13 @@ import { useToast } from "@/components/providers/toast-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
-import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
+import { EmptyState, ErrorState } from "@/components/ui/states";
 import { apiFetch, ApiError } from "@/lib/api";
 import { presetRange, RANGE_PRESETS, toYmd, type RangePreset } from "@/lib/dates";
 import { cn, formatNaira } from "@/lib/format";
 import type { Expense, Paginated } from "@/lib/types";
 import { useApi } from "@/lib/use-api";
+import { TableSkeleton } from "@/components/ui/skeletons";
 
 interface ExpenseList extends Paginated<Expense> {
   summary: { total_kobo: number };
@@ -326,7 +327,7 @@ export default function AdminExpensesPage() {
 
       <div className="mt-4">
         {!data && loading ? (
-          <LoadingState />
+          <TableSkeleton />
         ) : error && !data ? (
           <ErrorState message={error} />
         ) : !data || data.data.length === 0 ? (

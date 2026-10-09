@@ -5,7 +5,7 @@ import { cn } from "@/lib/format";
 import { ButtonLink } from "./button";
 
 export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn("animate-pulse rounded-lg bg-black/[0.06]", className)} />;
+  return <div className={cn("animate-pulse rounded-lg bg-black/[0.06] motion-reduce:animate-none", className)} />;
 }
 
 export function ProductCardSkeleton() {

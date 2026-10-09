@@ -3,10 +3,11 @@
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
-import { LoadingState, ErrorState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { formatDate } from "@/lib/format";
 import { useApi } from "@/lib/use-api";
 import type { AdminStats } from "@/lib/types";
+import { AdminDashboardSkeleton } from "@/components/skeletons/admin";
 
 function Stat({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
@@ -21,7 +22,7 @@ function Stat({ label, value, hint }: { label: string; value: string | number; h
 export default function AdminDashboardPage() {
   const { data, loading, error } = useApi<{ data: AdminStats }>("/admin/dashboard");
 
-  if (loading) return <LoadingState />;
+  if (loading) return <AdminDashboardSkeleton />;
   if (error || !data) return <ErrorState message={error ?? undefined} />;
 
   const s = data.data;

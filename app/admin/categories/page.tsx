@@ -7,10 +7,11 @@ import { useToast } from "@/components/providers/toast-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/field";
-import { ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { apiFetch, ApiError } from "@/lib/api";
 import { useApi } from "@/lib/use-api";
 import type { Category } from "@/lib/types";
+import { TableSkeleton } from "@/components/ui/skeletons";
 
 const EMPTY = { name: "", description: "", is_active: true };
 
@@ -63,7 +64,7 @@ export default function AdminCategoriesPage() {
       <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_320px]">
         <div>
           {loading ? (
-            <LoadingState />
+            <TableSkeleton />
           ) : error ? (
             <ErrorState message={error} />
           ) : (

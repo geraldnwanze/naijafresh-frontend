@@ -6,9 +6,10 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
-import { ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { apiFetch, ApiError } from "@/lib/api";
 import { useApi } from "@/lib/use-api";
+import { AdminFormPageSkeleton } from "@/components/skeletons/admin";
 
 interface Settings {
   delivery_fee_kobo: number;
@@ -30,7 +31,7 @@ export default function AdminSettingsPage() {
     if (data) setForm(data.data);
   }, [data]);
 
-  if (loading || !form) return <LoadingState />;
+  if (loading || !form) return <AdminFormPageSkeleton />;
   if (error) return <ErrorState message={error} />;
 
   async function save(e: React.FormEvent) {

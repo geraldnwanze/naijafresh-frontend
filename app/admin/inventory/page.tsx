@@ -7,10 +7,11 @@ import { useToast } from "@/components/providers/toast-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
-import { ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import { apiFetch, ApiError } from "@/lib/api";
 import { useApi } from "@/lib/use-api";
 import type { Paginated, Product } from "@/lib/types";
+import { TableSkeleton } from "@/components/ui/skeletons";
 
 // Low-stock threshold in display units: 5 items, or 5 kg for weight-sold products.
 const LOW_STOCK = 5;
@@ -92,7 +93,7 @@ export default function AdminInventoryPage() {
 
       <div className="mt-4">
         {loading ? (
-          <LoadingState />
+          <TableSkeleton />
         ) : error ? (
           <ErrorState message={error} />
         ) : (
