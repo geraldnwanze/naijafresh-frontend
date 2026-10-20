@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | NaijaFresh",
   },
   description:
-    "Shop fresh Nigerian foodstuff, local spices and ready-to-cook meal kits delivered to your door.",
+    "Shop fresh Nigerian foodstuff, local spices and ready-to-cook meal kits, washed and hygienically packed, delivered to your door.",
   keywords: [
     "Nigerian food delivery",
     "meal kits Nigeria",
@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     "Afang soup kit",
     "Egusi soup kit",
     "buy crayfish online",
+    "hygienic food delivery",
   ],
   openGraph: {
     type: "website",

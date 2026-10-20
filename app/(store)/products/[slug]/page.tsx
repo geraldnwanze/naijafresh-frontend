@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ProductImage } from "@/components/product-image";
+import { HygieneAssurance } from "@/components/hygiene/hygiene-assurance";
 import { ProductPurchasePanel } from "@/components/product-purchase-panel";
 import { Badge } from "@/components/ui/badge";
 import { ApiError } from "@/lib/api";
@@ -80,6 +81,8 @@ export default async function ProductPage({ params }: { params: Params }) {
           <div className="mt-6">
             <ProductPurchasePanel product={product} />
           </div>
+
+          <HygieneAssurance product={product} />
 
           {product.is_frozen && (
             <p className="mt-4 rounded-xl bg-sky-50 px-4 py-3 text-sm text-sky-900">

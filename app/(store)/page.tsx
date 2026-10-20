@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { CategoryCard } from "@/components/category-card";
+import { HygieneBand } from "@/components/hygiene/hygiene-band";
 import { ProductCard } from "@/components/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import { getCategories, getProducts } from "@/lib/catalogue";
@@ -56,9 +57,14 @@ export default async function HomePage() {
                 Explore meal kits
               </ButtonLink>
             </div>
-            <p className="mt-4 text-sm text-ink-soft">
+            {/* On phones the hygiene line replaces this note, to keep the hero inside the first screen. */}
+            <p className="mt-4 hidden text-sm text-ink-soft sm:block">
               You choose what you want to cook. We handle the market work.
             </p>
+            <Link href="/hygiene" className="mt-4 inline-block text-sm font-semibold text-brand-700 hover:underline sm:mt-2">
+              <span className="sm:hidden">🧼 Hygienically packed. See how →</span>
+              <span className="hidden sm:inline">🧼 Washed, cleaned and hygienically packed. See how →</span>
+            </Link>
           </div>
 
           {/* Compact tiles (one row on phones, 3 × 2 on larger screens) so the whole hero fits in the first screen. */}
@@ -78,6 +84,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <HygieneBand />
 
       {/* Shop by category */}
       <section className="container-page py-12">
