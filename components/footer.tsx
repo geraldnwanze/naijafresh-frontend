@@ -13,6 +13,12 @@ export function Footer() {
             Your Nigerian kitchen, prepared for you. Fresh ingredients, local spices and ready-to-cook
             meal kits delivered to your door.
           </p>
+          <p className="mt-3 max-w-xs text-sm text-cream-200/80">
+            🧼 Hygiene comes first: washed, cleaned and hygienically packed.{" "}
+            <Link href="/hygiene" className="font-semibold underline-offset-2 hover:underline">
+              Our hygiene promise
+            </Link>
+          </p>
         </div>
 
         <div>
@@ -24,6 +30,7 @@ export function Footer() {
             <li><Link href="/categories/spices-seasonings" className="hover:underline">Spices &amp; seasonings</Link></li>
             <li><Link href="/categories/protein" className="hover:underline">Protein</Link></li>
             <li><Link href="/categories/frozen-foods" className="hover:underline">Frozen foods</Link></li>
+            <li><Link href="/hygiene" className="hover:underline">Our hygiene promise</Link></li>
           </ul>
         </div>
 

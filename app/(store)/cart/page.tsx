@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { HygieneNote } from "@/components/hygiene/hygiene-assurance";
 import { useCart } from "@/components/providers/cart-provider";
 import { ProductImage } from "@/components/product-image";
 import { QuantitySelector } from "@/components/quantity-selector";
@@ -121,6 +122,8 @@ export default function CartPage() {
               </dd>
             </div>
           </dl>
+
+          <HygieneNote />
 
           {hasFrozen && (
             <p className="mt-3 rounded-lg bg-sky-50 px-3 py-2 text-xs text-sky-900">

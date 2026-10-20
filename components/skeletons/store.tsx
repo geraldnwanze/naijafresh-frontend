@@ -39,6 +39,18 @@ export function HomeSkeleton() {
         </div>
       </section>
 
+      <section className="border-b border-black/5 bg-white">
+        <div className="container-page py-8 md:py-10">
+          <Skeleton className="h-7 w-52" />
+          <Skeleton className="mt-2 h-4 w-80 max-w-full" />
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {Array.from({ length: 5 }, (_, i) => (
+              <Skeleton key={i} className="h-32 rounded-card" />
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="container-page py-12">
         <Skeleton className="h-7 w-48" />
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -198,6 +210,30 @@ export function AccountSkeleton() {
           <CardListSkeleton rows={2} />
         </div>
       </div>
+    </LoadingRegion>
+  );
+}
+
+/** The hygiene page: centred hero, then a grid of step cards. */
+export function HygieneSkeleton() {
+  return (
+    <LoadingRegion label="Loading…">
+      <section className="border-b border-black/5 bg-gradient-to-b from-brand-50 to-cream-100">
+        <div className="container-page flex flex-col items-center py-12 md:py-16">
+          <Skeleton className="h-7 w-32 rounded-full" />
+          <Skeleton className="mt-5 h-10 w-full max-w-lg" />
+          <Skeleton className="mt-5 h-5 w-full max-w-xl" />
+          <Skeleton className="mt-2 h-5 w-3/5 max-w-sm" />
+        </div>
+      </section>
+      <section className="container-page py-12">
+        <Skeleton className="h-7 w-64" />
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Skeleton key={i} className="h-40 rounded-card" />
+          ))}
+        </div>
+      </section>
     </LoadingRegion>
   );
 }

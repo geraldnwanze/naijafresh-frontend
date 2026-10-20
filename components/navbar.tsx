@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: "/products?type=food_pack", label: "Food packs" },
   { href: "/categories/frozen-foods", label: "Frozen" },
   { href: "/categories/spices-seasonings", label: "Spices" },
+  { href: "/hygiene", label: "Hygiene" },
   { href: "/#how-it-works", label: "How it works" },
 ];
 

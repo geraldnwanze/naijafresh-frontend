@@ -1,3 +1,4 @@
+import { HygieneNote } from "@/components/hygiene/hygiene-assurance";
 import { formatNaira } from "@/lib/format";
 import type { PricedCart } from "@/lib/types";
 
@@ -40,6 +41,8 @@ export function CheckoutSummary({ cart, loading }: { cart: PricedCart | null; lo
               <dd className="font-extrabold text-brand-800">{formatNaira(cart.total_kobo)}</dd>
             </div>
           </dl>
+
+          <HygieneNote />
         </>
       ) : (
         <p className="mt-4 text-sm text-ink-soft">Your cart is empty.</p>
