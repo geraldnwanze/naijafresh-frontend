@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { apiFetch } from "@/lib/api";
@@ -50,7 +49,6 @@ export function AuthProvider({
   initialUser?: User | null;
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(initialUser);
   const [loading, setLoading] = useState(!initialUser);
@@ -119,9 +117,12 @@ export function AuthProvider({
     setToken(null);
     setUser(null);
     writeTokenCookie(null);
-    router.push("/");
-    router.refresh();
-  }, [router, token]);
+    // A full navigation, not router.push() + router.refresh(): refreshing a protected page such
+    // as /account after the cookie is gone gets it redirected to the sign-in page, racing the
+    // push to the home page. This also drops every cached, signed-in page.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- deliberate, see above
+    window.location.href = "/";
+  }, [token]);
 
   const refresh = useCallback(async () => {
     const current = readTokenCookie();

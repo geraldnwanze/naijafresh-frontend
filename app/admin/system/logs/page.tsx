@@ -134,7 +134,7 @@ export default function ApplicationLogsPage() {
                 level === l ? "bg-brand-700 text-white" : "bg-white text-ink-soft hover:bg-brand-50",
               )}
             >
-              {l} <span className="opacity-70">{data.counts[l]}</span>
+              {l} <span className="font-normal">{data.counts[l]}</span>
             </button>
           ))}
         </div>

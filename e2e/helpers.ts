@@ -19,6 +19,7 @@ const API = `${API_ORIGIN}/api/v1`;
 export const DEMO = {
   customer: { email: "customer@naijafresh.test", password: "password" },
   admin: { email: "admin@naijafresh.test", password: "password" },
+  superAdmin: { email: "superadmin@naijafresh.test", password: "password" },
 };
 
 let counter = 0;
@@ -34,6 +35,8 @@ export async function signIn(page: Page, account: { email: string; password: str
   await label(page, /^Password/).fill(account.password);
   await page.getByRole("button", { name: /^sign in$/i }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
+  // Let the app's own redirect finish, or the next page.goto() collides with it (seen on WebKit).
+  await page.waitForLoadState("networkidle");
 }
 
 export async function signUp(page: Page, details: { name: string; email: string; password: string }, next = "/") {
@@ -45,6 +48,7 @@ export async function signUp(page: Page, details: { name: string; email: string;
   await label(page, /^Confirm password/).fill(details.password);
   await page.getByRole("button", { name: "Create account" }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/signup"));
+  await page.waitForLoadState("networkidle");
 }
 
 /** Adds `product` from its page, bumping the quantity `extra` times first. */
@@ -120,4 +124,51 @@ export async function expectNoViolations(page: Page) {
   }));
 
   expect(summary, `Accessibility problems on ${page.url()}`).toEqual([]);
+}
+
+
+/** Signs in through the API and returns the bearer token (for setting data up quickly). */
+export async function apiToken(request: APIRequestContext, account: { email: string; password: string }): Promise<string> {
+  const res = await request.post(`${API}/auth/login`, { data: account });
+  expect(res.ok(), await res.text()).toBeTruthy();
+  return (await res.json()).token as string;
+}
+
+/** Creates a simple per-item product as an admin, straight through the API. */
+export async function createProductViaApi(
+  request: APIRequestContext,
+  adminToken: string,
+  details: { name: string; priceKobo?: number; stock?: number },
+): Promise<{ id: number; slug: string }> {
+  const headers = { Authorization: `Bearer ${adminToken}`, Accept: "application/json" };
+  const categories = (await (await request.get(`${API}/admin/categories`, { headers })).json()).data;
+
+  const res = await request.post(`${API}/admin/products`, {
+    headers: { ...headers, "Content-Type": "application/json" },
+    data: JSON.stringify({
+      category_id: categories[0].id,
+      type: "ingredient",
+      name: details.name,
+      description: "Created by the end-to-end tests.",
+      price_kobo: details.priceKobo ?? 100_000,
+      sold_by: "unit",
+      storage_type: "ambient",
+      unit: "pack",
+      stock_quantity: details.stock ?? 10,
+      is_available: true,
+    }),
+  });
+  expect(res.ok(), await res.text()).toBeTruthy();
+  const product = (await res.json()).data;
+
+  return { id: product.id, slug: product.slug };
+}
+
+export async function setStockViaApi(request: APIRequestContext, adminToken: string, productId: number, stock: number) {
+  // The inventory endpoint is the lightweight one the stock screen uses.
+  const res = await request.put(`${API}/admin/inventory/${productId}`, {
+    headers: { Authorization: `Bearer ${adminToken}`, Accept: "application/json", "Content-Type": "application/json" },
+    data: JSON.stringify({ stock_quantity: stock, is_available: true }),
+  });
+  expect(res.ok(), await res.text()).toBeTruthy();
 }

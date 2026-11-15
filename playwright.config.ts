@@ -26,6 +26,13 @@ export default defineConfig({
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] }, testMatch: ["**/purchase.spec.ts", "**/accessibility.spec.ts"] },
+    // Other engines (Safari's is WebKit): the buying path and the account forms, where browsers differ most.
+    { name: "webkit", use: { ...devices["Desktop Safari"] }, testMatch: ["**/purchase.spec.ts", "**/account.spec.ts"] },
+    { name: "iphone", use: { ...devices["iPhone 14"] }, testMatch: ["**/purchase.spec.ts"] },
+    // Firefox runs in CI and when asked for (E2E_FIREFOX=1); it will not start on every Mac.
+    ...(process.env.CI || process.env.E2E_FIREFOX
+      ? [{ name: "firefox", use: { ...devices["Desktop Firefox"] }, testMatch: ["**/purchase.spec.ts", "**/account.spec.ts"] }]
+      : []),
   ],
   webServer: [
     {
