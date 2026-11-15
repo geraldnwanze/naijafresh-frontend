@@ -27,7 +27,7 @@ export function Navbar() {
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-700 text-lg">🥬</span>
           <span className="text-lg font-extrabold tracking-tight text-brand-800">
-            Naija<span className="text-leaf-500">Fresh</span>
+            Naija<span className="text-brand-500">Fresh</span>
           </span>
         </Link>
 
@@ -52,7 +52,7 @@ export function Navbar() {
           <Link
             href="/cart"
             className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-brand-50"
-            aria-label="Cart"
+            aria-label={count > 0 ? `Cart, ${count} ${count === 1 ? "item" : "items"}` : "Cart"}
           >
             <span className="text-xl">🛒</span>
             {count > 0 && (

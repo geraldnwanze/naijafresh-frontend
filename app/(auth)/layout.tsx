@@ -5,7 +5,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
     <div className="flex min-h-screen flex-col items-center justify-center bg-brand-50 px-4 py-10">
       <Link href="/" className="mb-6 flex items-center gap-2 text-xl font-extrabold text-brand-800">
         <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-700 text-lg">🥬</span>
-        Naija<span className="text-leaf-500">Fresh</span>
+        Naija<span className="text-brand-500">Fresh</span>
       </Link>
       <div className="w-full max-w-md rounded-card border border-black/5 bg-white p-6 shadow-sm sm:p-8">
         {children}

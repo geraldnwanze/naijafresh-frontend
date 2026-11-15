@@ -67,7 +67,7 @@ export function NotificationBell({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
+        aria-label={unreadCount > 0 ? `Notifications, ${unreadCount > 9 ? "9+" : unreadCount} unread` : "Notifications"}
         aria-expanded={open}
         aria-haspopup="true"
         className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-brand-50"

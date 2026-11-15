@@ -48,6 +48,8 @@ export default function CartPage() {
             >
               <Link
                 href={`/products/${line.slug}`}
+                tabIndex={-1}
+                aria-hidden="true"
                 className="h-20 w-20 shrink-0 overflow-hidden rounded-xl"
               >
                 <ProductImage

@@ -10,7 +10,8 @@ import { formatWeight } from "@/lib/weight";
 export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-card border border-black/5 bg-white shadow-sm transition hover:shadow-md">
-      <Link href={`/products/${product.slug}`} className="relative block aspect-square overflow-hidden">
+      {/* The image repeats the title link below, so keyboard and screen-reader users skip it. */}
+      <Link href={`/products/${product.slug}`} tabIndex={-1} aria-hidden="true" className="relative block aspect-square overflow-hidden">
         <ProductImage product={product} rounded="rounded-none" className="transition duration-300 group-hover:scale-[1.03]" />
         <div className="absolute left-2 top-2 flex gap-1">
           {product.is_meal_kit && <Badge className="bg-accent-500 text-brand-900">Meal kit</Badge>}

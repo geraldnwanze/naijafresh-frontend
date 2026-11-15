@@ -25,7 +25,7 @@ export default defineConfig({
   },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 7"] }, testMatch: "**/purchase.spec.ts" },
+    { name: "mobile", use: { ...devices["Pixel 7"] }, testMatch: ["**/purchase.spec.ts", "**/accessibility.spec.ts"] },
   ],
   webServer: [
     {
@@ -37,9 +37,11 @@ export default defineConfig({
       stderr: "pipe",
     },
     {
-      command: `npx next dev --webpack -p ${WEB_PORT} -H 127.0.0.1`,
+      // A production build, not `next dev`: no hot reload or on-demand compiling to race
+      // with the tests, and it is what customers get. API_ORIGIN is baked in at build time.
+      command: `npx next build --webpack && npx next start -p ${WEB_PORT} -H 127.0.0.1`,
       url: `http://127.0.0.1:${WEB_PORT}/api/health`,
-      timeout: 180_000,
+      timeout: 360_000,
       reuseExistingServer: false,
       env: {
         API_ORIGIN: `http://127.0.0.1:${API_PORT}`,

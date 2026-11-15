@@ -58,7 +58,7 @@ function MockPay() {
       <div className="w-full max-w-md rounded-card border border-black/5 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <span className="text-lg font-bold text-brand-800">Test payment</span>
-          <span className="rounded-full bg-accent-500/20 px-2 py-0.5 text-[11px] font-bold text-accent-600">
+          <span className="rounded-full bg-accent-500/20 px-2 py-0.5 text-[11px] font-bold text-brand-900">
             SIMULATION
           </span>
         </div>

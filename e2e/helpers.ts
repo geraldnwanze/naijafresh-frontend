@@ -1,4 +1,15 @@
-import { expect, type APIRequestContext, type Page } from "@playwright/test";
+import { expect, type APIRequestContext, type Locator, type Page } from "@playwright/test";
+
+/**
+ * Text and label lookups that ignore hidden copies. A production page streams
+ * in with hidden placeholders for a moment, and `getByText` also matches
+ * hidden elements, which trips Playwright's one-match rule.
+ */
+export const text = (page: Page, value: string | RegExp, options?: { exact?: boolean }): Locator =>
+  page.getByText(value, options).filter({ visible: true });
+
+export const label = (page: Page, value: string | RegExp): Locator =>
+  page.getByLabel(value).filter({ visible: true });
 
 export const API_ORIGIN = `http://127.0.0.1:${process.env.E2E_API_PORT ?? "8010"}`;
 const API = `${API_ORIGIN}/api/v1`;
@@ -18,19 +29,19 @@ export function uniqueEmail(label: string): string {
 
 export async function signIn(page: Page, account: { email: string; password: string }, next = "/") {
   await page.goto(`/login?next=${encodeURIComponent(next)}`);
-  await page.getByLabel(/^Email/).fill(account.email);
-  await page.getByLabel(/^Password/).fill(account.password);
+  await label(page, /^Email/).fill(account.email);
+  await label(page, /^Password/).fill(account.password);
   await page.getByRole("button", { name: /^sign in$/i }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }
 
 export async function signUp(page: Page, details: { name: string; email: string; password: string }, next = "/") {
   await page.goto(`/signup?next=${encodeURIComponent(next)}`);
-  await page.getByLabel(/^Full name/).fill(details.name);
-  await page.getByLabel(/^Email/).fill(details.email);
-  await page.getByLabel(/^Phone number/).fill("08031234567");
-  await page.getByLabel(/^Password/).fill(details.password);
-  await page.getByLabel(/^Confirm password/).fill(details.password);
+  await label(page, /^Full name/).fill(details.name);
+  await label(page, /^Email/).fill(details.email);
+  await label(page, /^Phone number/).fill("08031234567");
+  await label(page, /^Password/).fill(details.password);
+  await label(page, /^Confirm password/).fill(details.password);
   await page.getByRole("button", { name: "Create account" }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/signup"));
 }
@@ -49,11 +60,11 @@ export async function addFromProductPage(page: Page, slug: string, name: string,
 }
 
 export async function fillDeliveryDetails(page: Page) {
-  await page.getByLabel(/^Phone number/).fill("08031234567");
-  await page.getByLabel(/^Street address/).fill("12 Admiralty Way");
-  await page.getByLabel(/^Area/).fill("Lekki Phase 1");
-  await page.getByLabel(/^City/).fill("Lagos");
-  await page.getByLabel(/^State/).fill("Lagos");
+  await label(page, /^Phone number/).fill("08031234567");
+  await label(page, /^Street address/).fill("12 Admiralty Way");
+  await label(page, /^Area/).fill("Lekki Phase 1");
+  await label(page, /^City/).fill("Lagos");
+  await label(page, /^State/).fill("Lagos");
 }
 
 /** Places an order straight through the API (setup for tests that start after checkout). */

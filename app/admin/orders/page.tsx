@@ -46,7 +46,7 @@ export default function AdminOrdersPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-xs"
         />
-        <Select value={status} onChange={(e) => setStatus(e.target.value)} className="max-w-[220px]">
+        <Select aria-label="Filter by status" value={status} onChange={(e) => setStatus(e.target.value)} className="max-w-[220px]">
           {STATUSES.map((s) => (
             <option key={s} value={s}>
               {s ? s.replace(/_/g, " ") : "All statuses"}

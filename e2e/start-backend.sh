@@ -40,4 +40,6 @@ for seeder in DeliveryWindowSeeder SettingSeeder ProductSeeder DemoAccountSeeder
   php artisan db:seed --force --no-interaction --class="Database\\Seeders\\$seeder" >/dev/null
 done
 
+# Several workers: the built-in server is single-threaded by default, so one slow request stalls the rest.
+export PHP_CLI_SERVER_WORKERS="${PHP_CLI_SERVER_WORKERS:-4}"
 php artisan serve --host=127.0.0.1 --port="$API_PORT" --no-reload

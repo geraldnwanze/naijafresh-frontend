@@ -125,6 +125,7 @@ export default function AdminInventoryPage() {
                         <div className="flex items-center gap-2">
                           <input
                             type="number"
+                            aria-label={`Stock for ${product.name}${product.sold_by === "weight" ? " in kg" : ""}`}
                             min="0"
                             step={product.sold_by === "weight" ? "0.1" : "1"}
                             value={value.stock}
@@ -140,6 +141,7 @@ export default function AdminInventoryPage() {
                       <td className="px-4 py-2">
                         <input
                           type="checkbox"
+                          aria-label={`${product.name} is available`}
                           checked={value.available}
                           onChange={(e) =>
                             setDraft((d) => ({ ...d, [product.id]: { ...value, available: e.target.checked } }))

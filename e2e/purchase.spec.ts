@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { addFromProductPage, DEMO, fillDeliveryDetails, signIn, signUp, uniqueEmail } from "./helpers";
+import { addFromProductPage, DEMO, fillDeliveryDetails, label, signIn, signUp, text, uniqueEmail } from "./helpers";
 
 test.describe("buying as a new customer", () => {
   test("browse, build a cart, sign up at checkout and pay on delivery", async ({ page }, testInfo) => {
@@ -16,10 +16,10 @@ test.describe("buying as a new customer", () => {
     // Two of an item, plus a weight-sold product (1 kg minimum).
     await addFromProductPage(page, "waterleaf", "Waterleaf", 1);
     await addFromProductPage(page, "parboiled-rice", "Parboiled Rice");
-    await expect(page.getByRole("link", { name: "Cart", exact: true })).toContainText("3");
+    await expect(page.getByRole("banner").getByRole("link", { name: /^Cart/ })).toContainText("3");
 
     // Cart: lines and the server-priced subtotal (2 × ₦600 + 1 kg × ₦1,900).
-    await page.getByRole("link", { name: "Cart", exact: true }).click();
+    await page.getByRole("banner").getByRole("link", { name: /^Cart/ }).click();
     await expect(page.getByRole("heading", { name: "Your cart" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Waterleaf" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Parboiled Rice" })).toBeVisible();
@@ -33,26 +33,26 @@ test.describe("buying as a new customer", () => {
     await expect(page.getByRole("heading", { name: "Checkout" })).toBeVisible();
 
     // The name and email are pre-filled from the account.
-    await expect(page.getByLabel(/^First name/)).toHaveValue("Tola");
-    await expect(page.getByLabel(/^Last name/)).toHaveValue("Buyer");
-    await expect(page.getByText(/2 × Waterleaf/)).toBeVisible();
-    await expect(page.getByText(/1 kg × Parboiled Rice/)).toBeVisible();
+    await expect(label(page, /^First name/)).toHaveValue("Tola");
+    await expect(label(page, /^Last name/)).toHaveValue("Buyer");
+    await expect(text(page, /2 × Waterleaf/)).toBeVisible();
+    await expect(text(page, /1 kg × Parboiled Rice/)).toBeVisible();
 
     await fillDeliveryDetails(page);
-    await page.getByLabel("Cash on delivery").check();
+    await label(page, "Cash on delivery").check();
     await page.getByRole("button", { name: "Place order" }).click();
 
     // Order page: confirmation, items, payment method.
     await expect(page).toHaveURL(/\/orders\/\d+\?placed=1/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText(/\S+/);
-    await expect(page.getByText("Waterleaf")).toBeVisible();
-    await expect(page.getByText("Parboiled Rice")).toBeVisible();
-    await expect(page.getByText("Cash on delivery")).toBeVisible();
-    await expect(page.getByText("12 Admiralty Way", { exact: false })).toBeVisible();
+    await expect(text(page, "Waterleaf")).toBeVisible();
+    await expect(text(page, "Parboiled Rice")).toBeVisible();
+    await expect(text(page, "Cash on delivery")).toBeVisible();
+    await expect(text(page, "12 Admiralty Way", { exact: false })).toBeVisible();
 
     // The cart was emptied.
     await page.goto("/cart");
-    await expect(page.getByText("Your cart is empty")).toBeVisible();
+    await expect(text(page, "Your cart is empty")).toBeVisible();
 
     // The order shows up in the customer's order list.
     await page.goto("/orders");
@@ -64,7 +64,7 @@ test.describe("buying as a new customer", () => {
     await addFromProductPage(page, "waterleaf", "Waterleaf");
     await page.goto("/checkout");
     await fillDeliveryDetails(page);
-    await page.getByLabel("Cash on delivery").check();
+    await label(page, "Cash on delivery").check();
     await page.getByRole("button", { name: "Place order" }).click();
     await expect(page).toHaveURL(/\/orders\/\d+\?placed=1/);
 
@@ -80,24 +80,24 @@ test.describe("paying by card (test-mode gateway)", () => {
     await page.goto("/checkout");
     await expect(page.getByRole("heading", { name: "Checkout" })).toBeVisible();
     await fillDeliveryDetails(page);
-    await page.getByLabel("Pay with card (Paystack)").check();
-    await expect(page.getByText(/test mode/i).first()).toBeVisible();
+    await label(page, "Pay with card (Paystack)").check();
+    await expect(text(page, /test mode/i).first()).toBeVisible();
     await page.getByRole("button", { name: "Place order" }).click();
     await expect(page).toHaveURL(/\/checkout\/mock-pay\?reference=/);
   });
 
   test("an approved payment marks the order paid", async ({ page }) => {
-    await expect(page.getByText("Amount due")).toBeVisible();
+    await expect(text(page, "Amount due")).toBeVisible();
     await page.getByRole("button", { name: "Approve payment" }).click();
 
-    await expect(page.getByText(/Payment successful/)).toBeVisible();
+    await expect(text(page, /Payment successful/)).toBeVisible();
     await expect(page).toHaveURL(/\/orders\/\d+\?paid=1/);
-    await expect(page.getByText("Paid", { exact: true })).toBeVisible();
+    await expect(text(page, "Paid", { exact: true })).toBeVisible();
   });
 
   test("a declined card leaves the order unpaid and can be retried", async ({ page }) => {
     await page.getByRole("button", { name: "Simulate a declined card" }).click();
-    await expect(page.getByText(/Payment declined/)).toBeVisible();
+    await expect(text(page, /Payment declined/)).toBeVisible();
 
     // Trying again from the same screen works.
     await page.getByRole("button", { name: "Approve payment" }).click();
@@ -117,12 +117,12 @@ test.describe("the cart", () => {
     await expect(page.getByRole("definition").filter({ hasText: /^₦3,100$/ }).first()).toBeVisible();
 
     await page.getByRole("button", { name: /^Increase by/ }).click(); // rice: 1 kg -> 1.5 kg
-    await expect(page.getByText("1.5 kg")).toBeVisible();
+    await expect(text(page, "1.5 kg")).toBeVisible();
     await expect(page.getByRole("definition").filter({ hasText: /^₦4,050$/ }).first()).toBeVisible();
 
     await page.getByRole("button", { name: "Remove" }).first().click();
     await page.getByRole("button", { name: "Remove" }).first().click();
-    await expect(page.getByText("Your cart is empty")).toBeVisible();
+    await expect(text(page, "Your cart is empty")).toBeVisible();
   });
 
   test("keeps the cart after a reload", async ({ page }) => {
@@ -131,7 +131,7 @@ test.describe("the cart", () => {
     await page.reload();
 
     await expect(page.getByRole("link", { name: "Waterleaf" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Cart", exact: true })).toContainText("3");
+    await expect(page.getByRole("banner").getByRole("link", { name: /^Cart/ })).toContainText("3");
   });
 
   test("checkout without an account sends you to sign in", async ({ page }) => {
@@ -161,14 +161,14 @@ test.describe("when the card payment cannot be started", () => {
     await addFromProductPage(page, "waterleaf", "Waterleaf");
     await page.goto("/checkout");
     await fillDeliveryDetails(page);
-    await page.getByLabel("Pay with card (Paystack)").check();
+    await label(page, "Pay with card (Paystack)").check();
     await page.getByRole("button", { name: "Place order" }).click();
 
     await expect(page.getByRole("status").filter({ hasText: "your order is saved" })).toBeVisible();
     await expect(page).toHaveURL(/\/orders\/\d+\?placed=1/);
 
     // The cart was emptied because the order exists.
-    await expect(page.getByRole("link", { name: "Cart", exact: true })).not.toContainText(/\d/);
+    await expect(page.getByRole("banner").getByRole("link", { name: /^Cart/ })).not.toContainText(/\d/);
 
     // Trying again from the order page works.
     await page.unroute("**/_api/v1/orders");
@@ -176,6 +176,6 @@ test.describe("when the card payment cannot be started", () => {
     await expect(page).toHaveURL(/\/checkout\/mock-pay\?reference=/);
     await page.getByRole("button", { name: "Approve payment" }).click();
     await expect(page).toHaveURL(/\/orders\/\d+\?paid=1/);
-    await expect(page.getByText("Paid", { exact: true })).toBeVisible();
+    await expect(text(page, "Paid", { exact: true })).toBeVisible();
   });
 });

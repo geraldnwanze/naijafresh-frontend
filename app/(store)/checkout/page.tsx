@@ -279,7 +279,7 @@ export default function CheckoutPage() {
                   />
                   <span className="font-medium">{method.label}</span>
                   {method.value === "paystack" && config?.payment.is_mock && (
-                    <span className="ml-auto rounded-full bg-accent-500/20 px-2 py-0.5 text-[11px] font-semibold text-accent-600">
+                    <span className="ml-auto rounded-full bg-accent-500/20 px-2 py-0.5 text-[11px] font-semibold text-brand-900">
                       TEST MODE
                     </span>
                   )}
@@ -290,7 +290,7 @@ export default function CheckoutPage() {
               <p className="mt-2 text-xs font-medium text-rose-600">{errors["payment_method"][0]}</p>
             )}
             {config?.payment.is_mock && form.payment_method === "paystack" && (
-              <p className="mt-3 rounded-lg bg-accent-500/10 px-3 py-2 text-xs text-accent-600">
+              <p className="mt-3 rounded-lg bg-accent-500/10 px-3 py-2 text-xs text-brand-900">
                 Payments are running in test mode. No real card will be charged — you&apos;ll see a
                 simulated payment screen.
               </p>
