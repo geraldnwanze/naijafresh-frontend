@@ -87,6 +87,10 @@ export function ProductForm({
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [saving, setSaving] = useState(false);
 
+  // The category list can arrive after the form opens, so the first category is
+  // chosen at the time it is needed rather than when the form was created.
+  const categoryId = form.category_id || categories[0]?.id || 0;
+
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
@@ -101,7 +105,7 @@ export function ProductForm({
     const isPack = form.type === "food_pack";
 
     const body: Record<string, unknown> = {
-      category_id: Number(form.category_id),
+      category_id: Number(categoryId),
       type: form.type,
       name: form.name,
       description: form.description,
@@ -192,7 +196,7 @@ export function ProductForm({
           <Input value={form.name} onChange={(e) => set("name", e.target.value)} required />
         </Field>
         <Field label="Category" required error={errors.category_id?.[0]}>
-          <Select value={form.category_id} onChange={(e) => set("category_id", Number(e.target.value))}>
+          <Select value={categoryId} onChange={(e) => set("category_id", Number(e.target.value))}>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
@@ -429,7 +433,7 @@ export function ProductForm({
                     />
                     default
                   </label>
-                  <button type="button" onClick={() => setVariants((v) => v.filter((_, j) => j !== i))} className="text-xs text-rose-600">
+                  <button type="button" onClick={() => setVariants((v) => v.filter((_, j) => j !== i))} className="text-xs text-rose-700">
                     remove
                   </button>
                 </div>

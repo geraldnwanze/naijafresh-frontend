@@ -1,28 +1,6 @@
-import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { addFromProductPage, DEMO, signIn, text } from "./helpers";
-
-/**
- * Automated WCAG 2.1 A/AA checks with axe-core. These catch what a machine can
- * (missing names, labels, contrast, landmarks, duplicate ids); they do not
- * replace trying the site with a keyboard and a screen reader.
- */
-async function expectNoViolations(page: Page) {
-  const { violations } = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-    .analyze();
-
-  const summary = violations.map((violation) => ({
-    rule: violation.id,
-    impact: violation.impact,
-    help: violation.help,
-    count: violation.nodes.length,
-    examples: violation.nodes.slice(0, 3).map((node) => node.target.join(" ")),
-  }));
-
-  expect(summary, `Accessibility problems on ${page.url()}`).toEqual([]);
-}
+import { addFromProductPage, DEMO, expectNoViolations, signIn, text } from "./helpers";
 
 test.describe("storefront pages", () => {
   for (const [name, path] of [
