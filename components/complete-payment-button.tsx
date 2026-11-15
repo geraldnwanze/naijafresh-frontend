@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, ApiError } from "@/lib/api";
 
 export function CompletePaymentButton({ orderReference }: { orderReference: string }) {
   const { token } = useAuth();
@@ -33,8 +33,8 @@ export function CompletePaymentButton({ orderReference }: { orderReference: stri
       } else {
         toast("This order doesn't need an online payment.", "info");
       }
-    } catch {
-      toast("Could not start the payment. Please try again.", "error");
+    } catch (error) {
+      toast(error instanceof ApiError ? error.message : "Could not start the payment. Please try again.", "error");
     } finally {
       setLoading(false);
     }

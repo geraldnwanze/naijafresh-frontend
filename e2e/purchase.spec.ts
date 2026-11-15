@@ -141,3 +141,41 @@ test.describe("the cart", () => {
     await expect(page).toHaveURL(/\/login\?next=%2Fcheckout/);
   });
 });
+
+test.describe("when the card payment cannot be started", () => {
+  test("the order is kept, the customer is told why, and can pay from the order page", async ({ page }) => {
+    const message = "We couldn't start your card payment just now. Your order is saved, so you can try again from your order page in a moment.";
+
+    // Make the API report what it now sends when Paystack refuses: the order is
+    // saved, but the checkout carries an error and no redirect.
+    await page.route("**/_api/v1/orders", async (route) => {
+      if (route.request().method() !== "POST") return route.continue();
+
+      const response = await route.fetch();
+      const json = await response.json();
+      json.checkout = { ...json.checkout, requires_redirect: false, authorization_url: null, is_mock: false, error: message };
+      await route.fulfill({ response, json });
+    });
+
+    await signIn(page, DEMO.customer);
+    await addFromProductPage(page, "waterleaf", "Waterleaf");
+    await page.goto("/checkout");
+    await fillDeliveryDetails(page);
+    await page.getByLabel("Pay with card (Paystack)").check();
+    await page.getByRole("button", { name: "Place order" }).click();
+
+    await expect(page.getByRole("status").filter({ hasText: "your order is saved" })).toBeVisible();
+    await expect(page).toHaveURL(/\/orders\/\d+\?placed=1/);
+
+    // The cart was emptied because the order exists.
+    await expect(page.getByRole("link", { name: "Cart", exact: true })).not.toContainText(/\d/);
+
+    // Trying again from the order page works.
+    await page.unroute("**/_api/v1/orders");
+    await page.getByRole("button", { name: "Complete payment" }).click();
+    await expect(page).toHaveURL(/\/checkout\/mock-pay\?reference=/);
+    await page.getByRole("button", { name: "Approve payment" }).click();
+    await expect(page).toHaveURL(/\/orders\/\d+\?paid=1/);
+    await expect(page.getByText("Paid", { exact: true })).toBeVisible();
+  });
+});

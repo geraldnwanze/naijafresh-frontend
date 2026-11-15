@@ -6,7 +6,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { ButtonLink } from "@/components/ui/button";
 import { LoadingState } from "@/components/ui/states";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, ApiError } from "@/lib/api";
 import type { Order } from "@/lib/types";
 
 function VerifyPayment() {
@@ -18,6 +18,7 @@ function VerifyPayment() {
 
   const [state, setState] = useState<"verifying" | "paid" | "unpaid" | "error">("verifying");
   const [order, setOrder] = useState<Order | null>(null);
+  const [problem, setProblem] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading || !token || !reference || started.current) return;
@@ -33,7 +34,11 @@ function VerifyPayment() {
         setState(res.paid ? "paid" : "unpaid");
         if (res.paid) setTimeout(() => router.replace(`/orders/${res.order.id}?paid=1`), 1200);
       })
-      .catch(() => setState("error"));
+      .catch((error) => {
+        // A 502 carries wording written for shoppers (including "don't pay twice").
+        setProblem(error instanceof ApiError && error.status === 502 ? error.message : null);
+        setState("error");
+      });
   }, [authLoading, token, reference, router]);
 
   if (state === "verifying") return <LoadingState label="Confirming your payment…" />;
@@ -66,7 +71,7 @@ function VerifyPayment() {
           <>
             <p className="text-2xl">⚠️</p>
             <h1 className="mt-2 text-lg font-bold text-brand-800">Something went wrong</h1>
-            <p className="mt-1 text-sm text-ink-soft">Please check your orders page in a moment.</p>
+            <p className="mt-1 text-sm text-ink-soft">{problem ?? "Please check your orders page in a moment."}</p>
             <ButtonLink href="/orders" className="mt-4">My orders</ButtonLink>
           </>
         )}

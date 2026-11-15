@@ -24,6 +24,8 @@ interface OrderResponse {
     authorization_url: string | null;
     is_mock: boolean;
     reference: string;
+    /** Set when the card payment could not be started; the order itself was saved. */
+    error: string | null;
   };
 }
 
@@ -139,6 +141,14 @@ export default function CheckoutPage() {
       });
 
       track("order_placed", { reference: res.data.reference, total_kobo: res.data.total_kobo });
+
+      if (res.checkout.error) {
+        // The order is saved; the order page offers "Complete payment" to try again.
+        clear();
+        toast(res.checkout.error, "error");
+        router.push(`/orders/${res.data.id}?placed=1`);
+        return;
+      }
 
       if (res.checkout.requires_redirect && res.checkout.authorization_url) {
         clear();
