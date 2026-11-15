@@ -42,6 +42,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: checks
+    env:
+      # playwright.config.ts looks here, so install the browser in the same place.
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/node_modules/.playwright-browsers
 
     steps:
       - uses: actions/checkout@v4
