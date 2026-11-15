@@ -28,8 +28,10 @@ createdb -h 127.0.0.1 -p "$PG_PORT" -U e2e naijafresh_e2e
 # Real environment variables win over the backend's .env file.
 export APP_ENV=local APP_DEBUG=false
 export DB_CONNECTION=pgsql DB_HOST=127.0.0.1 DB_PORT="$PG_PORT" DB_DATABASE=naijafresh_e2e DB_USERNAME=e2e DB_PASSWORD=
-export CACHE_STORE=array SESSION_DRIVER=array QUEUE_CONNECTION=sync MAIL_MAILER=array LOG_CHANNEL=stderr
-export PAYMENT_PROVIDER=mock
+export CACHE_STORE=array SESSION_DRIVER=array QUEUE_CONNECTION=sync LOG_CHANNEL=stderr
+# Mail and payments default to fakes; set these (and the provider keys) to try the real services.
+export MAIL_MAILER="${E2E_MAIL_MAILER:-array}"
+export PAYMENT_PROVIDER="${E2E_PAYMENT_PROVIDER:-mock}"
 
 cd "$BACKEND_DIR"
 php artisan migrate:fresh --force --no-interaction >/dev/null
